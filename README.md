@@ -199,6 +199,7 @@ Once you've interpreted your scores and identified where to focus:
 2. **If you've already diagnosed failures and need fixes:** Go to [Remediation Mapping (Layer 3)](remediation-mapping.md)
 3. **If you want to see the full flow end to end:** Go to [Worked Examples](worked-examples.md)
 4. **If you're looking for systemic patterns across failures:** Go to [Pattern Analysis (Layer 4)](pattern-analysis.md)
+5. **If you suspect your system prompt is too long or complex:** Go to [Instruction Budget Indicators](instruction-budget-indicators.md)
 
 If you have more than 10 failing test cases, consider starting with [Pattern Analysis (Layer 4)](pattern-analysis.md) to identify systemic issues before triaging individually in Layer 2.
 
