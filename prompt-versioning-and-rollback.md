@@ -56,6 +56,10 @@ AFTER changing:
 
 ## Versioning Strategy
 
+### Where to Store Prompt Versions
+
+Store your prompt changelog and version records alongside your agent configuration — typically in the same repository or shared wiki where you manage the agent's system prompt. If you're using the [failure log template](templates/failure-log-template.md), consider adding a **Prompt Version** column to link failures to specific prompt versions. This makes it easy to answer "what version was running when this failure occurred?"
+
 ### Semantic Version Scheme for Prompts
 
 Apply version numbers to prompt changes based on scope of impact:
@@ -73,7 +77,7 @@ For each prompt version, record:
 ```markdown
 ## Prompt Version: [agent-name] v1.3.0
 
-**Date:** 2025-03-15
+**Date:** 2026-03-15
 **Author:** [name]
 **Parent version:** v1.2.1
 
@@ -152,7 +156,7 @@ LLM outputs are non-deterministic. A test case that passed before and fails now 
 - **Run the eval 3 times** on both the old and new prompt versions
 - **Compare pass rates**, not single outcomes: "3/3 pass" vs "1/3 pass" is a real regression; "3/3 pass" vs "2/3 pass" might be variance
 - **Flag test cases that flip** between runs as "flaky" — these need either more robust grading criteria or acceptance of variance
-- **Set a significance threshold**: if a test case passes 2/3+ times on the new version, it's likely not a regression
+- **Set a significance threshold**: if a test case passes 2/3 times on the new version, treat it as **borderline** — investigate whether the grading criteria are too rigid or the agent is genuinely less consistent. Only 3/3 passes should be considered confidently stable.
 
 ---
 
@@ -219,7 +223,7 @@ If reverting the prompt doesn't restore the original scores, the regression has 
 
 ### Safe Change Practices
 
-1. **One change, one purpose**: Each prompt version change should target exactly one behavior. If you need to fix three things, make three versions and test each.
+1. **One change, one purpose**: Each prompt version change should target exactly one behavior. If you need to fix three things, make three versions and test each. If running the full eval suite for each individual change isn't feasible, prioritize by severity — test safety-critical changes individually and batch lower-risk wording changes together with clear documentation of what each sub-change targets.
 
 2. **Additive before subtractive**: When possible, add clarifying instructions rather than removing existing ones. Removal is harder to predict.
 
@@ -236,29 +240,29 @@ Maintain this alongside your agent configuration:
 ```markdown
 # [Agent Name] Prompt Changelog
 
-## v1.3.0 — 2025-03-15
+## v1.3.0 — 2026-03-15
 **Change:** Added multi-turn clarification handling
 **Why:** KC-12 and KC-15 failing — follow-up questions losing context
 **Result:** +5% knowledge grounding, no regressions
 **Status:** Active
 
-## v1.2.1 — 2025-03-10
+## v1.2.1 — 2026-03-10
 **Change:** Clarified response length expectation ("2-3 sentences" instead of "brief")
 **Why:** CQ-08 failing — responses too short for complex questions
 **Result:** +5% conversation quality, no regressions
 **Status:** Superseded by v1.3.0
 
-## v1.2.0 — 2025-03-05
+## v1.2.0 — 2026-03-05
 **Change:** Added refund handling instructions
 **Why:** New business requirement — refund flow launched
 **Result:** New eval set (Refund Handling) at 90%, no regressions on existing sets
 **Status:** Superseded by v1.2.1
 
-## v1.1.0 — 2025-02-28 [ROLLED BACK]
+## v1.1.0 — 2026-02-28 [ROLLED BACK]
 **Change:** Restructured system prompt to group instructions by topic
 **Why:** Prompt was getting hard to maintain
 **Result:** -8% knowledge grounding regression, cause: reordering moved grounding rules to middle
-**Status:** Rolled back to v1.0.2 on 2025-03-01
+**Status:** Rolled back to v1.0.2 on 2026-03-01
 ```
 
 ---
@@ -273,6 +277,8 @@ Prompt versioning connects to the triage flow at several points:
 | **Layer 2: Failure Triage** | Version diffs help identify whether a failure was caused by a recent change |
 | **Layer 3: Remediation** | Version records show which remediation approaches have already been tried |
 | **Layer 4: Pattern Analysis** | Changelog reveals patterns: "every time we modify section X, eval Y regresses" |
+
+For a worked example of regression detection and prompt change remediation, see [Journey 3: Post-Update Regression](worked-examples.md#journey-3-post-update-regression).
 
 ### Triage Question: "Did a prompt change cause this?"
 
@@ -289,5 +295,5 @@ When investigating a failure, check the version history:
 
 - [Remediation Mapping](remediation-mapping.md) — specific fixes for each root cause type
 - [Pattern Analysis](pattern-analysis.md) — identifying systemic issues across failures
-- [Eval Cost Management](eval-cost-management.md) — budgeting for regression test runs
+- Eval Cost Management (coming soon) — budgeting for regression test runs
 - [Worked Examples](worked-examples.md) — see prompt versioning in context of full triage flows
