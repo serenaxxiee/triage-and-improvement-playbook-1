@@ -57,6 +57,7 @@ TRIAGE CHEAT SHEET
 | **Layer 4: Pattern Analysis** | "What systemic issues do my failures reveal?" | [pattern-analysis.md](pattern-analysis.md) |
 | **Worked Examples** | "Show me the full flow end to end" | [worked-examples.md](worked-examples.md) |
 | **Failure Log Template** | "How do I track what I've found?" | [templates/failure-log-template.md](templates/failure-log-template.md) |
+| **Eval Cost Management** | "How do I budget and optimize eval costs?" | [eval-cost-management.md](eval-cost-management.md) |
 
 > **Looking for a definition of "done"?** See [When Are You Done Iterating?](#when-are-you-done-iterating)
 
