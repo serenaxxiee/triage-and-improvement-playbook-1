@@ -56,6 +56,7 @@ TRIAGE CHEAT SHEET
 | **Layer 3: Remediation Mapping** | "What specifically should I change?" | [remediation-mapping.md](remediation-mapping.md) |
 | **Layer 4: Pattern Analysis** | "What systemic issues do my failures reveal?" | [pattern-analysis.md](pattern-analysis.md) |
 | **Worked Examples** | "Show me the full flow end to end" | [worked-examples.md](worked-examples.md) |
+| **Eval Tooling Guide** | "Which evaluation tools should I use?" | [eval-tooling-guide.md](eval-tooling-guide.md) |
 | **Failure Log Template** | "How do I track what I've found?" | [templates/failure-log-template.md](templates/failure-log-template.md) |
 
 > **Looking for a definition of "done"?** See [When Are You Done Iterating?](#when-are-you-done-iterating)
