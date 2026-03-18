@@ -47,7 +47,7 @@ If you're working in Copilot Studio, here's how these general categories map to 
 |---|---|---|
 | **Keyword Match** | Deterministic | Response must contain specific terms (product names, policy phrases, required disclaimers) |
 | **Compare Meaning** | LLM-as-judge | Response should convey the same meaning as the expected answer, but exact wording doesn't matter |
-| **Capability Use** | Deterministic | Testing whether the agent invoked the right tool, topic, or knowledge source |
+| **Capability Use** | Deterministic | Testing whether the agent invoked the right tool, topic, or knowledge source (checks metadata on which topic/action was invoked, not the response text) |
 | **Custom** (classification) | LLM-as-judge | Binary or multi-label classification against evaluation instructions (e.g., compliance, safety, brand voice) |
 
 > **Tip:** You can combine methods on the same eval set. Use Keyword Match for factual checks alongside Custom for tone/compliance on the same test cases.
@@ -70,12 +70,14 @@ When using LLM-as-judge grading (Compare Meaning, Custom, or external eval frame
 
 | Grading Task | Recommended Judge Tier | Rationale |
 |---|---|---|
-| Factual correctness (semantic match) | Mid-tier (e.g., GPT-4o-mini, Claude 3.5 Haiku) | Comparing two statements for semantic equivalence is well within mid-tier capabilities |
-| Safety / compliance classification | Top-tier (e.g., GPT-4o, Claude 3.5 Sonnet) | Safety judgments require nuanced understanding of context and edge cases |
+| Factual correctness (semantic match) | Mid-tier | Comparing two statements for semantic equivalence is well within mid-tier capabilities |
+| Safety / compliance classification | Top-tier | Safety judgments require nuanced understanding of context and edge cases |
 | Tone and empathy assessment | Top-tier | Subjective qualities require sophisticated language understanding |
 | Multi-step reasoning quality | Top-tier | Evaluating reasoning chains requires strong reasoning ability in the judge |
 | Format / structure compliance | Mid-tier or deterministic | Often checkable with rules; LLM only needed for borderline cases |
 | Tool call parameter correctness | Deterministic preferred | Structured outputs are better validated with code than LLM judgment |
+
+> **Note:** "Mid-tier" and "top-tier" refer to capability tiers in your platform's model catalog. Model names and capabilities change frequently — consult your platform's current offerings when selecting a judge model.
 
 ### Cost-Quality Tradeoff
 
@@ -102,6 +104,8 @@ Select 20-30 test cases that represent the range of your eval set:
 - 10-15 borderline cases (reasonable people might disagree)
 
 Have **two domain experts independently score** each case as pass/fail. Cases where experts disagree are your most valuable calibration data — they reveal where your criteria need tightening.
+
+> **Lightweight alternative:** If two independent reviewers aren't available, one reviewer scoring 15-20 cases still provides useful signal. Prioritize borderline cases over clear pass/fail — those are where grader reliability matters most.
 
 ### Step 2: Run Your Grader on the Calibration Set
 
@@ -200,6 +204,6 @@ Use this before running a new eval set:
 
 ## Related Resources
 
-- [Layer 2: Failure Triage](triage-decision-tree.md) — diagnose why specific test cases fail
+- [Layer 2: Failure Triage — Grader Validation](triage-decision-tree.md#grader-validation) — quick diagnostic for grader reliability issues (this guide provides the deeper treatment)
 - [Layer 3: Remediation Mapping](remediation-mapping.md) — fix grader issues (see "Eval Setup Remediation")
 - [Layer 4: Pattern Analysis](pattern-analysis.md) — identify systematic grader problems across eval sets
