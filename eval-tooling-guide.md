@@ -40,18 +40,18 @@ Different tools excel at different stages of the evaluation lifecycle. Most team
 
 | Tool | Dev Eval | CI/CD | Production Monitoring | Human Review | Self-Hostable | Agent-Specific |
 |---|---|---|---|---|---|---|
-| **Arize Phoenix** | ★★★☆ | ★★☆☆ | ★★★★★ | ★★☆☆ | ✅ Yes | ★★★★☆ |
-| **Braintrust** | ★★★★☆ | ★★★★★ | ★★★★☆ | ★★★☆ | ❌ No | ★★★★☆ |
-| **Comet Opik** | ★★★☆ | ★★★☆ | ★★★★☆ | ★★☆☆ | ✅ Yes | ★★★☆ |
-| **DeepEval** | ★★★★★ | ★★★★★ | ★★☆☆ | ★☆☆☆ | ✅ Yes | ★★★☆ |
-| **Fiddler** | ★★☆☆ | ★★☆☆ | ★★★★★ | ★★★☆ | ❌ No | ★★★★☆ |
-| **Galileo** | ★★★☆ | ★★★☆ | ★★★★☆ | ★★☆☆ | ❌ No | ★★★☆ |
-| **Langfuse** | ★★★☆ | ★★★☆ | ★★★★☆ | ★★★☆ | ✅ Yes | ★★★☆ |
-| **LangSmith** | ★★★★☆ | ★★★☆ | ★★★★☆ | ★★★★★ | ❌ No | ★★★★☆ |
-| **Maxim AI** | ★★★★☆ | ★★★☆ | ★★★★☆ | ★★★☆ | ❌ No | ★★★★★ |
-| **RAGAS** | ★★★★★ | ★★☆☆ | ★☆☆☆ | ★☆☆☆ | ✅ Yes | ★★☆☆ |
-| **Truesight** | ★★★☆ | ★★☆☆ | ★★★☆ | ★★★★★ | ❌ No | ★★★☆ |
-| **W&B Weave** | ★★★★☆ | ★★★☆ | ★★★☆ | ★★☆☆ | ❌ No | ★★★☆ |
+| **Arize Phoenix** | ★★★☆☆ | ★★☆☆☆ | ★★★★★ | ★★☆☆☆ | ✅ Yes | ★★★★☆ |
+| **Braintrust** | ★★★★☆ | ★★★★★ | ★★★★☆ | ★★★☆☆ | ❌ No | ★★★★☆ |
+| **Comet Opik** | ★★★☆☆ | ★★★☆☆ | ★★★★☆ | ★★☆☆☆ | ✅ Yes | ★★★☆☆ |
+| **DeepEval** | ★★★★★ | ★★★★★ | ★★☆☆☆ | ★☆☆☆☆ | ✅ Yes | ★★★☆☆ |
+| **Fiddler** | ★★☆☆☆ | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | ❌ No | ★★★★☆ |
+| **Galileo** | ★★★☆☆ | ★★★☆☆ | ★★★★☆ | ★★☆☆☆ | ❌ No | ★★★☆☆ |
+| **Langfuse** | ★★★☆☆ | ★★★☆☆ | ★★★★☆ | ★★★☆☆ | ✅ Yes | ★★★☆☆ |
+| **LangSmith** | ★★★★☆ | ★★★☆☆ | ★★★★☆ | ★★★★★ | ❌ No | ★★★★☆ |
+| **Maxim AI** | ★★★★☆ | ★★★☆☆ | ★★★★☆ | ★★★☆☆ | ❌ No | ★★★★★ |
+| **RAGAS** | ★★★★★ | ★★☆☆☆ | ★☆☆☆☆ | ★☆☆☆☆ | ✅ Yes | ★★☆☆☆ |
+| **Truesight** | ★★★☆☆ | ★★☆☆☆ | ★★★☆☆ | ★★★★★ | ❌ No | ★★★☆☆ |
+| **W&B Weave** | ★★★★☆ | ★★★☆☆ | ★★★☆☆ | ★★☆☆☆ | ❌ No | ★★★☆☆ |
 
 ### Pricing Overview (as of March 2026)
 
@@ -98,7 +98,7 @@ Use these questions to narrow your selection:
 - **< 1K evals/month** → Any free tier works; optimize for developer experience
 - **1K–100K evals/month** → Consider Braintrust, LangSmith, or Langfuse cloud tiers
 - **> 100K evals/month** → Self-hosted options (Langfuse, Arize, Opik) or enterprise tiers (Braintrust, Fiddler)
-- **> 1M traces/day** → Comet Opik (built for 40M traces/day) or Arize enterprise
+- **> 1M evals/month** → Self-hosted at scale: Comet Opik (built for high throughput) or Arize enterprise
 
 ---
 
@@ -159,7 +159,7 @@ Use these questions to narrow your selection:
 - Exploratory strength doesn't translate well to automated testing
 - Elastic License 2.0 (not true OSS) — may affect some organizations
 
-**Best for:** Teams wanting deep production observability with zero vendor lock-in.
+**Best for:** Teams wanting deep production observability with minimal vendor lock-in (self-hostable, but see license note above).
 
 ---
 
@@ -241,6 +241,101 @@ Use these questions to narrow your selection:
 
 ---
 
+### Comet Opik — Best for High-Volume Trace Analysis
+
+**What it does:** Open-source LLM evaluation platform built for scale, with tracing, prompt management, and evaluation scoring designed to handle tens of millions of traces per day.
+
+**Key strengths:**
+- Built for scale — architecture supports 40M+ traces/day
+- Self-hostable (Apache 2.0) with full data sovereignty
+- Integrated prompt management and versioning
+- Growing metric library with RAG-specific evaluators
+
+**Key limitations:**
+- Human review features are basic compared to LangSmith or Truesight
+- Smaller ecosystem and community than Langfuse or LangSmith
+- Development evaluation workflow less polished than DeepEval or Braintrust
+
+**Best for:** Teams with high trace volumes needing a self-hostable, OSS-licensed platform.
+
+---
+
+### Fiddler — Best for Enterprise Compliance
+
+**What it does:** Enterprise AI observability platform with dedicated Trust Service features for model monitoring, bias detection, and regulatory audit trails.
+
+**Key strengths:**
+- Purpose-built compliance and audit trail capabilities
+- Guardrails and safety monitoring for production AI
+- Enterprise-grade SLAs and support
+- Bias and fairness monitoring across protected attributes
+
+**Key limitations:**
+- Cloud-only — no self-hosting option
+- Enterprise pricing (no published self-serve tiers)
+- Primarily designed for traditional ML monitoring; LLM-specific features are newer
+
+**Best for:** Regulated enterprises (finance, healthcare) needing audit trails and compliance documentation.
+
+---
+
+### Galileo — Best for Hallucination Detection
+
+**What it does:** LLM evaluation platform with proprietary hallucination detection metrics and RAG quality analysis, focused on output quality assurance.
+
+**Key strengths:**
+- Specialized hallucination index with granular attribution scoring
+- RAG quality metrics with chunk-level analysis
+- Prompt management with A/B experiment tracking
+- Automatic quality insight generation
+
+**Key limitations:**
+- Cloud-only with limited free tier (5K traces/month)
+- Proprietary metrics can be opaque — limited transparency into scoring logic
+- Smaller ecosystem compared to open-source alternatives
+
+**Best for:** Teams prioritizing hallucination detection and RAG output quality who prefer managed solutions.
+
+---
+
+### Truesight — Best for No-Code Human Review
+
+**What it does:** Evaluation platform designed for domain experts who aren't engineers, with no-code criteria definition and human annotation workflows.
+
+**Key strengths:**
+- No-code evaluation criteria builder — domain experts can define tests without engineering
+- Strong human review queue with inter-rater agreement tracking
+- Visual dashboard for non-technical stakeholders
+- Quick setup for initial evaluation cycles
+
+**Key limitations:**
+- Cloud-only, no self-hosting
+- Limited CI/CD and automation capabilities
+- Less suitable for engineering-led workflows or high-volume automated evaluation
+
+**Best for:** Teams where domain experts (not engineers) drive evaluation criteria, or where human review is the primary evaluation method.
+
+---
+
+### W&B Weave — Best for Experiment Tracking Heritage
+
+**What it does:** LLM evaluation and tracing extension of Weights & Biases, bringing experiment tracking discipline to LLM application development.
+
+**Key strengths:**
+- Strong experiment tracking lineage from W&B's ML heritage
+- Local scorers keep sensitive evaluation logic on-premise
+- Detailed logging and artifact versioning
+- Integration with broader W&B ecosystem (training, monitoring)
+
+**Key limitations:**
+- LLM evaluation features are newer and less mature than dedicated eval platforms
+- Cloud-only for full feature set
+- Best value when already using W&B for other ML workflows
+
+**Best for:** Teams already in the W&B ecosystem who want to extend experiment tracking to LLM evaluation.
+
+---
+
 ## Integration Patterns
 
 ### Pattern 1: Development + Production (Most Common)
@@ -287,7 +382,7 @@ Combine open-source tools for zero licensing cost:
 └─────────────┘  └─────────────┘  └─────────────┘
 ```
 
-**When to use:** Budget-constrained teams willing to invest integration effort. All components are self-hostable with permissive licenses.
+**When to use:** Budget-constrained teams willing to invest integration effort. All three components are self-hostable — DeepEval and RAGAS under Apache 2.0, Langfuse under MIT (all permissive). Note: if substituting Arize Phoenix, its Elastic License 2.0 restricts offering it as a managed service.
 
 ### Pattern 4: Compliance-First
 
@@ -320,9 +415,20 @@ Prioritize audit trails and data residency:
 ### Cost Optimization Strategies
 
 - **Start with free tiers** — Most platforms offer generous free tiers. Validate fit before committing budget.
-- **Use smaller judge models for screening** — Route only ambiguous cases to expensive judges (see [cost-efficiency evaluation patterns](https://github.com/microsoft/ai-agent-eval-scenario-library) for details).
+- **Use smaller judge models for screening** — Route only ambiguous cases to expensive judges (see the [scenario library](https://github.com/microsoft/ai-agent-eval-scenario-library) for related cost-efficiency evaluation patterns).
 - **Cache evaluation results** — Many evaluations are deterministic given the same inputs. Cache aggressively.
 - **Sample production traces** — You don't need to evaluate every production interaction. Statistical sampling (1–10%) often provides sufficient signal.
+
+---
+
+## Copilot Studio Integration Note
+
+> **If you're building with Microsoft Copilot Studio:** Copilot Studio includes a built-in **Evaluate** tab that runs test sets using Keyword Match, Compare Meaning, Capability Use, and General Quality methods. The external tools in this guide complement (not replace) that built-in workflow:
+>
+> - **For development iteration**, the built-in Evaluate tab may be sufficient. Consider external tools only when you need features it doesn't provide (experiment comparison, custom metrics, CI/CD gating).
+> - **For production monitoring**, external tools like Langfuse or Arize Phoenix add tracing, drift detection, and alerting capabilities beyond what Copilot Studio offers natively.
+> - **For human review at scale**, tools like LangSmith or Truesight provide annotation queue workflows that go beyond manual review in the Studio UI.
+> - **For trace export**, Copilot Studio supports Application Insights integration, which can feed into tools that accept OpenTelemetry-compatible traces (Arize Phoenix, Langfuse).
 
 ---
 
