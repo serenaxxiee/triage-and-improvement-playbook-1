@@ -160,6 +160,8 @@ When escalating, include:
 
 As you remediate failures by adding instructions to the system prompt (tone guidance, grounding instructions, safety rules, escalation criteria), the prompt grows. In practice, system prompts have a **practical capacity** beyond which adding more instructions causes regression — new instructions compete with existing ones for the model's attention.
 
+> **For a comprehensive diagnostic and remediation framework**, see the [Instruction Budget Indicators](instruction-budget-indicators.md) guide, which covers measurement techniques, position sensitivity testing, and detailed remediation strategies.
+
 ### Signs You've Hit the Instruction Budget Limit
 
 - Fixing one quality signal consistently degrades another (see [Journey 3: Post-Update Regression](worked-examples.md#journey-3-post-update-regression))

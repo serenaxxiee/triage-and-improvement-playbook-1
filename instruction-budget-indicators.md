@@ -10,7 +10,7 @@ This guide helps you detect, diagnose, and resolve **instruction budget exhausti
 - The agent silently omits behaviors (doesn't do something) rather than doing something wrong
 - You're seeing inconsistent pass/fail results for the same test case across runs
 
-> **Key insight:** Instruction budget exhaustion happens well below the technical context window limit. Research shows degradation starting at ~3,000 tokens of system prompt — even when the model's context window is 128K+ tokens.
+> **Key insight:** Instruction budget exhaustion happens well below the technical context window limit. Research shows degradation starting at ~3,000 tokens of system prompt — even when the model's context window is 128K+ tokens (see [Context Rot](https://research.trychroma.com/context-rot), Chroma Research 2025; [Effects of Prompt Length](https://arxiv.org/abs/2502.14255), 2025).
 
 ---
 
@@ -24,16 +24,18 @@ Different models degrade differently as instruction count increases. Understandi
 
 | Pattern | Behavior | Models That Exhibit This | What to Watch For |
 |---|---|---|---|
-| **Threshold decay** | Performance holds steady, then drops sharply at a specific instruction count (~150 instructions) | Reasoning models (o3, Gemini 2.5 Pro) | Sudden cliff in pass rates after a prompt edit that seemed minor |
-| **Linear decay** | Performance declines steadily from the first instruction onward | Claude Sonnet, GPT-4.1 | Gradual erosion of pass rates with each prompt addition |
+| **Threshold decay** | Performance holds steady, then drops sharply at a specific instruction count (~150 instructions) | Reasoning models (e.g., o3, Gemini 2.5 Pro as of early 2025) | Sudden cliff in pass rates after a prompt edit that seemed minor |
+| **Linear decay** | Performance declines steadily from the first instruction onward | Claude 3.5 Sonnet, GPT-4.1 (as of early 2025) | Gradual erosion of pass rates with each prompt addition |
 | **Exponential decay** | Rapid early decline that levels off at low accuracy | Smaller / older models | Poor baseline performance that barely changes with prompt edits |
+
+> **Note:** These patterns are based on [IFScale benchmark](https://arxiv.org/abs/2507.11538) findings and may shift as model versions update. Always verify against your specific model version.
 
 ### Common Symptoms
 
 | Symptom | What It Looks Like in Eval Results | Why It Happens |
 |---|---|---|
-| **Silent omission** | Test cases for specific behaviors start failing with no obvious cause. The agent's response looks reasonable — it just doesn't include a required element (disclaimer, escalation trigger, format constraint). | The model drops instructions entirely rather than attempting them incorrectly. Omission errors outnumber modification errors by 35:1 at high instruction density. |
-| **Middle-of-prompt blindness** | Instructions at the beginning and end of the system prompt are followed; those in the middle are not. | The "lost in the middle" effect — LLMs attend most strongly to the start and end of their input, with a 30%+ accuracy drop for information placed in the middle. |
+| **Silent omission** | Test cases for specific behaviors start failing with no obvious cause. The agent's response looks reasonable — it just doesn't include a required element (disclaimer, escalation trigger, format constraint). | The model drops instructions entirely rather than attempting them incorrectly. Per [IFScale](https://arxiv.org/abs/2507.11538), omission errors outnumber modification errors by 35:1 at high instruction density. |
+| **Middle-of-prompt blindness** | Instructions at the beginning and end of the system prompt are followed; those in the middle are not. | The "lost in the middle" effect ([Liu et al., TACL 2024](https://aclanthology.org/2024.tacl-1.9/)) — LLMs attend most strongly to the start and end of their input, with a 30%+ accuracy drop for information placed in the middle. |
 | **Inconsistent pass/fail** | The same test case passes on some runs and fails on others, with no configuration change between runs. | As the model approaches its instruction capacity, behavior becomes non-deterministic — sometimes it follows a constraint, sometimes it doesn't. Rising output variance is a leading indicator. |
 | **Regression after adding instructions** | A previously-passing eval set starts failing after you added unrelated instructions to the system prompt. | New instructions consume budget, causing previously-followed instructions to be dropped — even if the new instructions are about a completely different topic. |
 | **Response truncation** | Agent responses get shorter or stop mid-sentence more frequently. | Models increasingly undergenerate as context length grows, stopping before completing their output. |
@@ -56,6 +58,10 @@ Before diving into detailed metrics, run this quick test to determine if instruc
 | 30–80 instructions | 2,000–5,000 tokens | 🟡 Moderate risk | Monitor for the symptoms above; run the position sensitivity test |
 | 80–150 instructions | 5,000–10,000 tokens | 🔴 High risk | Instruction budget exhaustion is probable; run full diagnostic |
 | 150+ instructions | 10,000+ tokens | 🔴 Critical | Instruction budget is almost certainly a factor; immediate remediation needed |
+
+> **When count and token length disagree:** Prioritize token length — a prompt with 20 verbose instructions at 5,000 tokens is higher risk than 50 concise instructions at 2,000 tokens. An "instruction" here means a discrete behavioral directive (e.g., "always include a disclaimer"), not a sentence or bullet point.
+
+> **When this is NOT the problem:** If your prompt is under 2,000 tokens and failures are concentrated in a single quality signal (not spread across eval sets), instruction budget exhaustion is unlikely. Go back to [Layer 2 (Failure Triage)](triage-decision-tree.md) to investigate other root causes.
 
 ### Detailed Metrics
 

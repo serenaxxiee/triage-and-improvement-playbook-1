@@ -43,7 +43,7 @@ When failures span multiple eval sets, they often point to a shared root cause. 
 | **Tone failing but accuracy passing** | Agent gets the right answer but delivers it poorly | Focus on prompt style instructions; accuracy infrastructure is sound |
 | **Safety passing but accuracy failing** | Agent may be over-constrained — too cautious, refuses to answer when it should | Review safety instructions for overly broad restrictions that block legitimate answers |
 | **Everything passing except edge cases** | Core behavior is solid | Focus on expanding robustness at the margins; this is a good sign |
-| **Accuracy improving but tone degrading** | Instruction conflict — new accuracy instructions may be crowding out tone guidance | Review recent prompt changes; see [The Instruction Budget Problem](remediation-mapping.md#the-instruction-budget-problem) |
+| **Accuracy improving but tone degrading** | Instruction conflict — new accuracy instructions may be crowding out tone guidance | Review recent prompt changes; see [The Instruction Budget Problem](remediation-mapping.md#the-instruction-budget-problem) and the [Instruction Budget Indicators](instruction-budget-indicators.md) guide |
 | **Multiple eval sets all degrading simultaneously** | Likely a single root cause with broad impact | Check for recent system prompt changes, knowledge source updates, or platform model updates |
 
 ### What to Do With Cross-Signal Patterns
