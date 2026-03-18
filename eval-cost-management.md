@@ -17,7 +17,7 @@ Before optimizing, understand where the money goes:
 
 | Cost Driver | Impact | Example |
 |---|---|---|
-| **Judge model tier** | High | GPT-4 costs ~20x more than GPT-3.5-turbo per token |
+| **Judge model tier** | High | Premium models cost ~20-50x more per token than small models |
 | **Test case volume** | High | 100 vs 1,000 test cases = 10x cost difference |
 | **Eval frequency** | Medium | Running on every commit vs weekly batches |
 | **Multi-turn depth** | Medium | 3-turn conversations cost 3x single-turn |
@@ -32,9 +32,10 @@ For a rough budget estimate:
 Monthly eval cost ≈ (test cases) × (avg tokens per eval) × (price per token) × (runs per month)
 ```
 
-**Example**: 200 test cases × 2,000 tokens × $0.01/1K tokens (GPT-4o) × 20 runs/month = **$80/month**
+**Example** (prices illustrative — check current pricing):
+200 test cases × 2,000 tokens × $0.01/1K tokens (standard model) × 20 runs/month = **$80/month**
 
-The same setup with GPT-4o-mini at $0.00015/1K tokens: **$1.20/month**
+The same setup with a small model at ~$0.00015/1K tokens: **$1.20/month** — a ~65x cost reduction.
 
 ## The Eval Cost Pyramid
 
@@ -66,11 +67,11 @@ Not every evaluation needs your most expensive model. Match the judge to the tas
 | Eval Task | Recommended Tier | Examples |
 |---|---|---|
 | Format validation, keyword presence | **Deterministic** (no LLM) | JSON structure, required disclaimers |
-| Binary classification (pass/fail) | **Small model** (GPT-4o-mini, Haiku) | Safety checks, topic relevance |
-| Nuanced quality scoring | **Standard model** (GPT-4o, Sonnet) | Helpfulness, completeness |
-| Complex reasoning judgment | **Premium model** (GPT-4-turbo, Opus) | Multi-step accuracy, subtle errors |
+| Binary classification (pass/fail) | **Small model** | Safety checks, topic relevance |
+| Nuanced quality scoring | **Standard model** | Helpfulness, completeness |
+| Complex reasoning judgment | **Premium model** | Multi-step accuracy, subtle errors |
 
-**Cost impact**: Switching from GPT-4 to GPT-4o-mini for binary classification tasks can reduce those eval costs by **95%+** with minimal quality loss (Pearson correlation >0.85 with human judgments for straightforward tasks).
+**Cost impact**: Switching from a premium to a small model for binary classification tasks can reduce those eval costs by **95%+** with minimal quality loss. In practice, small models show strong correlation with human judgments for straightforward pass/fail tasks — but always calibrate against your specific eval set (see [Grader Model Selection](grader-model-selection.md)).
 
 **In Copilot Studio**: Use the built-in **Generative Answer** evaluator for standard quality checks before adding expensive Custom evaluators. The Custom test method with classification labels is cheaper than open-ended LLM scoring because it constrains the output space.
 
@@ -86,13 +87,17 @@ Don't run every test case through every evaluator:
 **Implementation pattern**:
 ```
 For each test case:
-  1. Run deterministic checks → if FAIL, log and skip expensive eval
+  1. Run deterministic checks → if FAIL, log the failure on that dimension
+     (decide per-scenario whether to also run LLM judge for other quality
+      dimensions, or skip to save cost)
   2. Run small-model classifier → if PASS with high confidence, done
   3. If UNCERTAIN or marginal → escalate to full LLM judge
   4. Weekly: sample 10% of "PASS" cases for human spot-check
 ```
 
-This cascading approach typically reduces LLM judge invocations by **40-60%** compared to running every case through the full pipeline.
+> **Important:** A deterministic check failure doesn't necessarily mean you should skip all further evaluation. If you need scores on *other* quality dimensions (e.g., a response with bad JSON formatting might still be worth scoring for helpfulness), continue the cascade. Skip only when a failure on one dimension makes other dimensions irrelevant for your use case.
+
+This cascading approach can reduce LLM judge invocations by roughly **40-60%** compared to running every case through the full pipeline, depending on your failure rates and eval set composition.
 
 ### Strategy 3: Smart Scheduling and Caching
 
@@ -136,7 +141,7 @@ Before spending on LLM judges, maximize what you can check for free:
 | Response latency threshold | Performance regressions | Free |
 | Tool call validation | Incorrect function signatures | Free |
 
-A well-designed deterministic check suite catches **30-50% of failures** without any LLM cost. Build these first, then layer LLM judges on top for what deterministic checks can't cover.
+A well-designed deterministic check suite can catch a significant portion of failures without any LLM cost. Build these first, then layer LLM judges on top for what deterministic checks can't cover.
 
 ## Budget Planning Template
 
@@ -174,7 +179,7 @@ A common split for teams getting started:
 
 | Mistake | Why It Happens | Fix |
 |---|---|---|
-| Using GPT-4 for every check | "We want the best quality" | Right-size: most checks don't need premium models |
+| Using premium models for every check | "We want the best quality" | Right-size: most checks don't need premium models |
 | Running full suite on every commit | Fear of missing regressions | Tiered schedule: deterministic on commit, full suite nightly |
 | No caching of eval results | Eval pipeline rebuilt from scratch each run | Hash-based caching of unchanged case + grader combinations |
 | Evaluating unchanged outputs | Full re-run when only 5% of cases changed | Diff-based evaluation: only re-eval changed responses |
